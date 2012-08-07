@@ -1,6 +1,6 @@
 # Visualtag
 
-TODO: Write a gem description
+With this gem is possible to generate a visual tag, which is a subset of artoolkit marker, characterized by a 6x6 binary matrix as image
 
 ## Installation
 

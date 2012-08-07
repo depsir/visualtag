@@ -1,0 +1,43 @@
+#!/usr/bin/env ruby
+require "optparse"
+require 'visualtag'
+
+options = {:default => "args"}
+
+ARGV.options do |opts|
+	opts.banner = "Usage:  #{File.basename($PROGRAM_NAME)} [OPTIONS] OTHER_ARGS"
+	
+	opts.separator ""
+	opts.separator "Specific Options:"
+	
+	
+	
+	opts.separator "Common Options:"
+	
+	opts.on( "-h", "--help",
+	         "Show this message." ) do
+		puts opts
+		exit
+	end
+	
+	begin
+		opts.parse!
+	rescue
+		puts opts
+		exit
+	end
+
+	pattern = 	[[0,1,1,0,1,1],
+					 [1,0,1,1,0,0],
+					 [0,0,1,1,1,1],
+					 [1,0,1,0,0,1],
+					 [0,0,0,0,0,0],
+					 [1,0,0,0,0,1]]
+
+	filename = 'tag.svg'
+
+	pattern_dimension =  1800 # in pixel
+	border_dimension = 720 # in pixel
+	Visualtag::create(pattern, filename, pattern_dimension, border_dimension)
+
+end
