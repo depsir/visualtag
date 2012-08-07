@@ -18,7 +18,11 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+	visualtag
+
+Running this command it will generate the file tag.svg containing the tag number 6.
+
+Now working on parameterization
 
 ## Contributing
 
