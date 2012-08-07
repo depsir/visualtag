@@ -18,8 +18,8 @@ Or install it yourself as:
 
 ## Usage
 
-	visualtag
-
+	visualtag [--pattern pattern] [--filename filename] [--border-dimension border-dimension] --[pattern-dimension
+	pattern-dimension] 
 Running this command it will generate the file tag.svg containing the tag number 6.
 
 Now working on parameterization
