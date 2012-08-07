@@ -1,8 +1,11 @@
 #!/usr/bin/env ruby
 require "optparse"
-require 'visualtag'
+require "visualtag"
 
-options = {:default => "args"}
+options = { :pattern_dimension => 1800,
+			:border_dimension => 720,
+			:filename => 'tag.svg',
+			:pattern => [[1,0,1,0,1,0],[0,1,0,1,0,1]]*3}
 
 ARGV.options do |opts|
 	opts.banner = "Usage:  #{File.basename($PROGRAM_NAME)} [OPTIONS] OTHER_ARGS"
@@ -10,7 +13,44 @@ ARGV.options do |opts|
 	opts.separator ""
 	opts.separator "Specific Options:"
 	
-	
+	opts.on( "-d D", "--pattern-dimension", Integer,
+	         "Dimension of the pattern, in pixels." ) do |opt|
+		options[:pattern_dimension] = opt
+	end
+
+	opts.on( "-b D", "--border-dimension", Integer,
+	         "Dimension of the border, in pixels." ) do |opt|
+		options[:border_dimension] = opt
+	end
+
+	opts.on( "-f F", "--filename", String,
+	         "Filename for the created tag." ) do |opt|
+		options[:filename] = opt
+	end
+
+	opts.on( "-p P", "--pattern", String,
+	         "The pattern of the tag, matlab or ruby representations are allowed" ) do |opt|
+		options[:pattern] = []
+		begin
+			options[:pattern] = eval(opt)
+		rescue Exception => exc
+			puts 'Not a ruby matrix.. maybe its matlab..'
+		end
+
+		begin
+			opt.each_line(';') do |row|
+				rubyrow = []
+				row.scan(/false|true|1|0/) do |match|
+					value = eval(match)
+					rubyrow << (value.class.name == 'Fixnum'? value > 0: value)
+				end
+				options[:pattern] << rubyrow.map { |e| e ? 1 : 0 }
+			end
+		rescue
+			puts 'Not matlab.. its unknown'
+		end
+		puts options[:pattern]
+	end
 	
 	opts.separator "Common Options:"
 	
@@ -27,17 +67,6 @@ ARGV.options do |opts|
 		exit
 	end
 
-	pattern = 	[[0,1,1,0,1,1],
-					 [1,0,1,1,0,0],
-					 [0,0,1,1,1,1],
-					 [1,0,1,0,0,1],
-					 [0,0,0,0,0,0],
-					 [1,0,0,0,0,1]]
-
-	filename = 'tag.svg'
-
-	pattern_dimension =  1800 # in pixel
-	border_dimension = 720 # in pixel
-	Visualtag::create(pattern, filename, pattern_dimension, border_dimension)
+	Visualtag::create(options[:pattern], options[:filename], options[:pattern_dimension], options[:border_dimension])
 
 end
