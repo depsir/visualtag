@@ -29,7 +29,7 @@ ARGV.options do |opts|
 	end
 
 	opts.on( "-p P", "--pattern", String,
-	         "The pattern of the tag, matlab or ruby representations are allowed" ) do |opt|
+	         "The pattern of the tag, matlab (mat2str surrounded with \") or ruby (to_s) representations are allowed" ) do |opt|
 		options[:pattern] = []
 		begin
 			options[:pattern] = eval(opt)
