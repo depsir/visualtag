@@ -12,11 +12,10 @@ ARGV.options do |opts|
 	opts.separator ""
 	opts.separator "Specific Options:"
 	
-	opts.on( "-d D", "--pattern-dimension", Integer,
-	         "Dimension of the pattern, in pixels." ) do |opt|
-		options[:pattern_dimension] = opt
+	opts.on( "-c C", "--cell-dimension", Integer,
+	         "Dimension of each cell of the pattern, in pixels." ) do |opt|
+		options[:pattern_dimension] = opt*6
 	end
-
 
 	opts.on( "-f F", "--filename", String,
 	         "Filename for the created tag." ) do |opt|
