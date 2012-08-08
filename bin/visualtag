@@ -4,7 +4,8 @@ require "visualtag"
 
 options = {	:pattern_dimension => 1800,
 			:filename => 'tag.svg',
-			:pattern => [[1,0,1,0,1,0],[0,1,0,1,0,1]]*3}
+			:pattern => [[1,0,1,0,1,0],[0,1,0,1,0,1]]*3,
+			:verbose => false}
 
 ARGV.options do |opts|
 	opts.banner = "Usage:  #{File.basename($PROGRAM_NAME)} [OPTIONS]"
@@ -24,28 +25,14 @@ ARGV.options do |opts|
 
 	opts.on( "-p P", "--pattern", String,
 	         "The pattern of the tag, matlab (mat2str surrounded with \") or ruby (to_s) representations are allowed" ) do |opt|
-		options[:pattern] = []
-		begin
-			options[:pattern] = eval(opt)
-		rescue Exception => exc
-			puts 'Not a ruby matrix.. maybe its matlab..'
-		end
-
-		begin
-			opt.each_line(';') do |row|
-				rubyrow = []
-				row.scan(/false|true|1|0/) do |match|
-					value = eval(match)
-					rubyrow << (value.class.name == 'Fixnum'? value > 0: value)
-				end
-				options[:pattern] << rubyrow.map { |e| e ? 1 : 0 }
-			end
-		rescue
-			puts 'Not matlab.. its unknown'
-		end
-		puts options[:pattern]
+		options[:pattern] = opt
 	end
 	
+	opts.on( "-v", "--verbose",
+	         "Print some text while executing." ) do |opt|
+		options[:verbose] = opt
+	end
+
 	opts.separator "Common Options:"
 	
 	opts.on( "-h", "--help",
@@ -60,7 +47,59 @@ ARGV.options do |opts|
 		puts opts
 		exit
 	end
+end
 
-	Visualtag::create(options[:pattern], options[:filename], options[:pattern_dimension], Float(options[:pattern_dimension])/2.0)
+pattern = []
+if options[:pattern].class.name == 'Array'
+	pattern = options[:pattern]
+	if options[:verbose]
+		puts 'Using default pattern'
+	end
+else
+	begin
+		pattern = eval(options[:pattern])
+		if (pattern.class.name == 'Array' && options[:verbose])
+			puts 'Found a ruby matrix'
+		end
+	rescue Exception => exc
+		begin
+			pattern = []
+			options[:pattern].each_line(';') do |row|
+				rubyrow = []
+				row.scan(/false|true|1|0/) do |match|
+					value = eval(match)
+					rubyrow << (value.class.name == 'Fixnum'? value > 0: value)
+				end
+				pattern << rubyrow.map { |e| e ? 1 : 0 }
+			end
+			if options[:verbose]
+				puts 'Found a matlab matrix'
+			end
+		rescue
+			puts 'Error: Pattern format unknown'
+			Process.exit
+		end
+	end
+end
 
+if pattern.class.name == 'Array'
+	if options[:verbose]
+		puts 'Used pattern:'
+		puts pattern.inspect
+	end
+else
+	puts 'Error: wrong pattern format. It must be an array'
+	Process.exit
+end
+
+begin
+	Visualtag::create(pattern, options[:filename], options[:pattern_dimension], Float(options[:pattern_dimension])/2.0)
+	if options[:verbose]
+		puts "Created file #{options[:filename]}"
+	end
+rescue
+	if options[:verbose]
+		puts "Error in generating the tag file"
+		Process.exit
+	end
 end
