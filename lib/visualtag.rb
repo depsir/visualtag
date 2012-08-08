@@ -11,7 +11,13 @@ module Visualtag
 
 		img = Rasem::SVGImage.new(tag_dimension,tag_dimension) do
 			rectangle 0, 0, tag_dimension,tag_dimension, :stroke=>'black', :fill=>'black'
+			if pattern.length != 6
+				raise 'Wrong pattern dimension'
+			end
 			pattern.each.with_index do |row, row_index|
+				if row.length != 6
+					raise 'Wrong pattern dimension'
+				end
 				row.reverse.each.with_index do |cell, column_index|
 					if cell == 0
 						color = 'black'
