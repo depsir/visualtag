@@ -7,7 +7,7 @@ options = {	:pattern_dimension => 1800,
 			:pattern => [[1,0,1,0,1,0],[0,1,0,1,0,1]]*3}
 
 ARGV.options do |opts|
-	opts.banner = "Usage:  #{File.basename($PROGRAM_NAME)} [OPTIONS] OTHER_ARGS"
+	opts.banner = "Usage:  #{File.basename($PROGRAM_NAME)} [OPTIONS]"
 	
 	opts.separator ""
 	opts.separator "Specific Options:"
