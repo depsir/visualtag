@@ -18,13 +18,13 @@ module Visualtag
 				if row.length != 6
 					raise 'Wrong pattern dimension'
 				end
-				row.reverse.each.with_index do |cell, column_index|
+				row.each.with_index do |cell, column_index|
 					if cell == 0
 						color = 'black'
 					else
 						color = 'white'
 					end
-					rectangle row_index*cell_dimension+border_dimension, column_index*cell_dimension+border_dimension, cell_dimension, cell_dimension, :stroke=>color, :fill=>color
+					rectangle column_index*cell_dimension+border_dimension, row_index*cell_dimension+border_dimension, cell_dimension, cell_dimension, :stroke=>color, :fill=>color
 				end
 			end
 		end
